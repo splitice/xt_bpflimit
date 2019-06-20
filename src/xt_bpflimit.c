@@ -60,9 +60,76 @@ static inline struct bpflimit_net *bpflimit_pernet(struct net *net)
 }
 
 /* need to declare this at the top */
+
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
+static const struct file_operations dl_file_ops_v2;
+static const struct file_operations dl_file_ops_v1;
+static const struct file_operations dl_file_ops;
+#endif
+
 static const struct seq_operations dl_seq_ops_v2;
 static const struct seq_operations dl_seq_ops_v1;
 static const struct seq_operations dl_seq_ops;
+
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
+static int dl_proc_open_v2(struct inode *inode, struct file *file)
+{
+	int ret = seq_open(file, &dl_seq_ops_v2);
+
+	if (!ret) {
+		struct seq_file *sf = file->private_data;
+
+		sf->private = PDE_DATA(inode);
+	}
+	return ret;
+}
+
+static int dl_proc_open_v1(struct inode *inode, struct file *file)
+{
+	int ret = seq_open(file, &dl_seq_ops_v1);
+
+	if (!ret) {
+		struct seq_file *sf = file->private_data;
+		sf->private = PDE_DATA(inode);
+	}
+	return ret;
+}
+
+static int dl_proc_open(struct inode *inode, struct file *file)
+{
+	int ret = seq_open(file, &dl_seq_ops);
+
+	if (!ret) {
+		struct seq_file *sf = file->private_data;
+
+		sf->private = PDE_DATA(inode);
+	}
+	return ret;
+}
+
+static const struct file_operations dl_file_ops_v2 = {
+	.open    = dl_proc_open_v2,
+	.read    = seq_read,
+	.llseek  = seq_lseek,
+	.release = seq_release
+};
+
+static const struct file_operations dl_file_ops_v1 = {
+	.open    = dl_proc_open_v1,
+	.read    = seq_read,
+	.llseek  = seq_lseek,
+	.release = seq_release
+};
+
+static const struct file_operations dl_file_ops = {
+	.open    = dl_proc_open,
+	.read    = seq_read,
+	.llseek  = seq_lseek,
+	.release = seq_release
+};
+#endif
+
+
 
 /* hash table crap */
 struct dsthash_dst {
@@ -339,6 +406,7 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	}
 	spin_lock_init(&hinfo->lock);
 
+	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
 	switch (revision) {
 	case 1:
 		ops = &dl_seq_ops_v1;
@@ -349,6 +417,18 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	default:
 		ops = &dl_seq_ops;
 	}
+	#else
+	switch (revision) {
+	case 1:
+		ops = &dl_file_ops_v1;
+		break;
+	case 2:
+		ops = &dl_file_ops_v2;
+		break;
+	default:
+		ops = &dl_file_ops;
+	}
+	#endif
 
 	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
 	hinfo->pde = proc_create_data(name, 0,
