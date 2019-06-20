@@ -305,7 +305,7 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 			size = 16;
 	}
 	/* FIXME: don't use vmalloc() here or anywhere else -HW */
-	hinfo = vmalloc(sizeof(struct xt_hashlimit_htable) +
+	hinfo = vmalloc(sizeof(struct xt_bpflimit_htable) +
 	                sizeof(struct hlist_head) * size);
 	if (hinfo == NULL)
 		return -ENOMEM;
@@ -353,7 +353,7 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	hinfo->pde = proc_create_data(name, 0,
 		(family == NFPROTO_IPV4) ?
 		bpflimit_net->ipt_bpflimit : bpflimit_net->ip6t_bpflimit,
-		fops, hinfo);
+		ops, hinfo);
 	#else
 	hinfo->pde = proc_create_seq_data(name, 0,
 		(family == NFPROTO_IPV4) ?
