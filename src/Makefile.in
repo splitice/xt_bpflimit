@@ -1,0 +1,76 @@
+# Edit Makefile.in and run ./configure
+
+KVERSION = @KVERSION@
+KDIR = @KDIR@
+KINSTDIR = $(shell dirname @KDIR@)
+KOPTS = @KOPTS@
+IPTABLES_CFLAGS = @IPTABLES_CFLAGS@
+IPTABLES_MODULES = @IPTABLES_MODULES@
+DEPMOD = /sbin/depmod -a $(KVERSION)
+CARGS = @CARGS@
+CC = gcc
+
+# https://www.kernel.org/doc/Documentation/kbuild/modules.txt
+# https://www.kernel.org/doc/Documentation/kbuild/makefiles.txt
+obj-m = xt_bpflimit.o
+ccflags-y = @KOPTS@
+
+all: xt_bpflimit.ko libxt_bpflimit.so
+
+xt_bpflimit.ko: xt_bpflimit.c Makefile
+	@echo Compiling for kernel $(KVERSION)
+	make -C $(KDIR) M=$(CURDIR) modules CONFIG_DEBUG_INFO=y
+	@touch $@
+	
+sparse: | xt_bpflimit.c Makefile
+	@rm -f xt_bpflimit.ko xt_bpflimit.o
+	@echo Compiling for kernel $(KVERSION)
+	make -C $(KDIR) M=$(CURDIR) modules C=1
+	@touch xt_bpflimit.ko
+minstall: | xt_bpflimit.ko
+	@echo " *"
+	make -C $(KDIR) M=$(CURDIR) modules_install INSTALL_MOD_PATH=$(DESTDIR)
+	$(DEPMOD)
+mclean:
+	make -C $(KDIR) M=$(CURDIR) clean
+lclean:
+	-rm -f *.so *_sh.o
+clean: mclean lclean
+	-rm -f *.so *.o modules.order
+
+libxt_bpflimit_sh.o: libxt_bpflimit.c
+	gcc -O2 -Wall -Wunused $(IPTABLES_CFLAGS) -fPIC -o $@ -c libxt_bpflimit.c
+
+
+%.so: %_sh.o
+	gcc -shared -o $@ $<
+
+linstall: | libxt_bpflimit.so
+	@echo " *"
+	install -D libxt_bpflimit.so $(DESTDIR)$(IPTABLES_MODULES)/libxt_bpflimit.so
+
+dinstall:
+	@echo " *"
+	@./install-dkms.sh --install
+
+install: minstall linstall
+
+uninstall:
+	-rm -f $(DESTDIR)$(IPTABLES_MODULES)/libxt_bpflimit.so
+	@if [ "@DKMSINSTALL@" = dinstall ]; then ./install-dkms.sh --uninstall; fi
+	-rm -f $(DESTDIR)$(KINSTDIR)/extra/xt_bpflimit.ko
+
+Makefile: Makefile.in configure
+	./configure --make ${CARGS}
+
+load: all
+	-insmod xt_bpflimit.ko
+
+unload:
+	-rmmod xt_bpflimit.ko
+
+reload: unload load
+
+ChangeLog:
+	gitlog-to-changelog > ChangeLog
+.PHONY: ChangeLog
