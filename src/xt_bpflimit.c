@@ -27,6 +27,7 @@
 #include <linux/ipv6.h>
 #include <net/ipv6.h>
 #endif
+#include <linux/version.h>
 
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
