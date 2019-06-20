@@ -63,8 +63,6 @@ static inline struct bpflimit_net *bpflimit_pernet(struct net *net)
 
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
 
-#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
-
 static const struct file_operations dl_file_ops_v2;
 static const struct file_operations dl_file_ops_v1;
 static const struct file_operations dl_file_ops;
