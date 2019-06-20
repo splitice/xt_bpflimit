@@ -1199,6 +1199,7 @@ bpflimit_mt6_save(const void *ip, const struct xt_entry_match *match)
 	bpflimit_mt_save(&info->cfg, info->name, 128, 3);
 }
 
+/*
 static const struct rates rates_v1_xlate[] = {
 	{ "day", XT_BPFLIMIT_SCALE * 24 * 60 * 60 },
 	{ "hour", XT_BPFLIMIT_SCALE * 60 * 60 },
@@ -1364,7 +1365,6 @@ static int bpflimit_mt_xlate(struct xt_xlate *xl, const char *name,
 	return ret;
 }
 
-/*
 static int bpflimit_xlate(struct xt_xlate *xl,
 			   const struct xt_xlate_mt_params *params)
 {
