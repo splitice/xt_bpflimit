@@ -173,22 +173,6 @@ static int xt_check_proc_name(const char* name, unsigned int size){
 		return -EINVAL;
 }
 
-/**
- * struct_size() - Calculate size of structure with trailing array.
- * @p: Pointer to the structure.
- * @member: Name of the array member.
- * @n: Number of elements in the array.
- *
- * Calculates size of memory needed for structure @p followed by an
- * array of @n @member elements.
- *
- * Return: number of bytes needed or SIZE_MAX on overflow.
- */
-#define struct_size(p, member, n)					\
-	__ab_c_size(n,							\
-		    sizeof(*(p)->member) + __must_be_array((p)->member),\
-		    sizeof(*(p)))
-
 #endif
 
 static DEFINE_MUTEX(bpflimit_mutex);	/* protects htables list */
@@ -321,7 +305,8 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 			size = 16;
 	}
 	/* FIXME: don't use vmalloc() here or anywhere else -HW */
-	hinfo = vmalloc(struct_size(hinfo, hash, size));
+	hinfo = vmalloc(sizeof(struct xt_hashlimit_htable) +
+	                sizeof(struct hlist_head) * size);
 	if (hinfo == NULL)
 		return -ENOMEM;
 	*out_hinfo = hinfo;
