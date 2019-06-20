@@ -287,7 +287,7 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	unsigned long nr_pages;
 	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
 		nr_pages = totalram_pages;
-		const struct file_operations *fops;
+		const struct file_operations *ops;
 	#else
 		nr_pages = totalram_pages();
 		const struct seq_operations *ops;
