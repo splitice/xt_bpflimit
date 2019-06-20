@@ -283,13 +283,14 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 {
 	struct bpflimit_net *bpflimit_net = bpflimit_pernet(net);
 	struct xt_bpflimit_htable *hinfo;
-	const struct seq_operations *ops;
 	unsigned int size, i;
 	unsigned long nr_pages;
 	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
 		nr_pages = totalram_pages;
+		const struct file_operations *fops;
 	#else
 		nr_pages = totalram_pages();
+		const struct seq_operations *ops;
 	#endif
 	
 	int ret;
