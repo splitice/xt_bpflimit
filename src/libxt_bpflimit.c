@@ -1364,6 +1364,7 @@ static int bpflimit_mt_xlate(struct xt_xlate *xl, const char *name,
 	return ret;
 }
 
+/*
 static int bpflimit_xlate(struct xt_xlate *xl,
 			   const struct xt_xlate_mt_params *params)
 {
@@ -1449,6 +1450,7 @@ static int bpflimit_mt6_xlate(struct xt_xlate *xl,
 
 	return bpflimit_mt_xlate(xl, info->name, &info->cfg, 3, NFPROTO_IPV6);
 }
+*/
 
 static struct xtables_match bpflimit_mt_reg[] = {
 	{
@@ -1466,7 +1468,7 @@ static struct xtables_match bpflimit_mt_reg[] = {
 		.save          = bpflimit_save,
 		.x6_options    = bpflimit_opts,
 		.udata_size    = sizeof(struct bpflimit_mt_udata),
-		.xlate         = bpflimit_xlate,
+//		.xlate         = bpflimit_xlate,
 	},
 	{
 		.version       = XTABLES_VERSION,
@@ -1483,7 +1485,7 @@ static struct xtables_match bpflimit_mt_reg[] = {
 		.save          = bpflimit_mt4_save_v1,
 		.x6_options    = bpflimit_mt_opts_v1,
 		.udata_size    = sizeof(struct bpflimit_mt_udata),
-		.xlate         = bpflimit_mt4_xlate_v1,
+//		.xlate         = bpflimit_mt4_xlate_v1,
 	},
 	{
 		.version       = XTABLES_VERSION,
@@ -1500,7 +1502,7 @@ static struct xtables_match bpflimit_mt_reg[] = {
 		.save          = bpflimit_mt6_save_v1,
 		.x6_options    = bpflimit_mt_opts_v1,
 		.udata_size    = sizeof(struct bpflimit_mt_udata),
-		.xlate         = bpflimit_mt6_xlate_v1,
+//		.xlate         = bpflimit_mt6_xlate_v1,
 	},
 	{
 		.version       = XTABLES_VERSION,
@@ -1517,7 +1519,7 @@ static struct xtables_match bpflimit_mt_reg[] = {
 		.save          = bpflimit_mt4_save_v2,
 		.x6_options    = bpflimit_mt_opts_v2,
 		.udata_size    = sizeof(struct bpflimit_mt_udata),
-		.xlate         = bpflimit_mt4_xlate_v2,
+//		.xlate         = bpflimit_mt4_xlate_v2,
 	},
 	{
 		.version       = XTABLES_VERSION,
@@ -1534,7 +1536,7 @@ static struct xtables_match bpflimit_mt_reg[] = {
 		.save          = bpflimit_mt6_save_v2,
 		.x6_options    = bpflimit_mt_opts_v2,
 		.udata_size    = sizeof(struct bpflimit_mt_udata),
-		.xlate         = bpflimit_mt6_xlate_v2,
+//		.xlate         = bpflimit_mt6_xlate_v2,
 	},
 	{
 		.version       = XTABLES_VERSION,
@@ -1551,7 +1553,7 @@ static struct xtables_match bpflimit_mt_reg[] = {
 		.save          = bpflimit_mt4_save,
 		.x6_options    = bpflimit_mt_opts,
 		.udata_size    = sizeof(struct bpflimit_mt_udata),
-		.xlate         = bpflimit_mt4_xlate,
+//		.xlate         = bpflimit_mt4_xlate,
 	},
 	{
 		.version       = XTABLES_VERSION,
@@ -1568,7 +1570,7 @@ static struct xtables_match bpflimit_mt_reg[] = {
 		.save          = bpflimit_mt6_save,
 		.x6_options    = bpflimit_mt_opts,
 		.udata_size    = sizeof(struct bpflimit_mt_udata),
-		.xlate         = bpflimit_mt6_xlate,
+//		.xlate         = bpflimit_mt6_xlate,
 	},
 };
 
