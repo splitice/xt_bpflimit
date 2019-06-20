@@ -276,7 +276,13 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	struct xt_bpflimit_htable *hinfo;
 	const struct seq_operations *ops;
 	unsigned int size, i;
-	unsigned long nr_pages = totalram_pages();
+	unsigned long nr_pages;
+	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
+		nr_pages = totalram_pages;
+	#else
+		nr_pages = totalram_pages();
+	#endif
+	
 	int ret;
 
 	if (cfg->size) {
@@ -333,10 +339,17 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 		ops = &dl_seq_ops;
 	}
 
+	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
+	hinfo->pde = proc_create_data(name, 0,
+		(family == NFPROTO_IPV4) ?
+		hashlimit_net->ipt_hashlimit : hashlimit_net->ip6t_hashlimit,
+		fops, hinfo);
+	#else
 	hinfo->pde = proc_create_seq_data(name, 0,
 		(family == NFPROTO_IPV4) ?
 		bpflimit_net->ipt_bpflimit : bpflimit_net->ip6t_bpflimit,
 		ops, hinfo);
+	#endif
 	if (hinfo->pde == NULL) {
 		kfree(hinfo->name);
 		vfree(hinfo);
@@ -910,6 +923,14 @@ static int bpflimit_mt_check_common(const struct xt_mtchk_param *par,
 
 	return 0;
 }
+
+
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
+static int xt_check_proc_name(const char* name, unsigned int size){
+	if (name[size - 1] != '\0')
+		return -EINVAL;
+}
+#endif
 
 static int bpflimit_mt_check_v1(const struct xt_mtchk_param *par)
 {
