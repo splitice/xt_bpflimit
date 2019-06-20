@@ -409,17 +409,6 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
 	switch (revision) {
 	case 1:
-		ops = &dl_seq_ops_v1;
-		break;
-	case 2:
-		ops = &dl_seq_ops_v2;
-		break;
-	default:
-		ops = &dl_seq_ops;
-	}
-	#else
-	switch (revision) {
-	case 1:
 		ops = &dl_file_ops_v1;
 		break;
 	case 2:
@@ -427,6 +416,17 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 		break;
 	default:
 		ops = &dl_file_ops;
+	}
+	#else
+	switch (revision) {
+	case 1:
+		ops = &dl_seq_ops_v1;
+		break;
+	case 2:
+		ops = &dl_seq_ops_v2;
+		break;
+	default:
+		ops = &dl_seq_ops;
 	}
 	#endif
 
