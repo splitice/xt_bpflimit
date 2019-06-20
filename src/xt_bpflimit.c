@@ -167,6 +167,30 @@ cfg_copy(struct bpflimit_cfg3 *to, const void *from, int revision)
 	return 0;
 }
 
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
+static int xt_check_proc_name(const char* name, unsigned int size){
+	if (name[size - 1] != '\0')
+		return -EINVAL;
+}
+
+/**
+ * struct_size() - Calculate size of structure with trailing array.
+ * @p: Pointer to the structure.
+ * @member: Name of the array member.
+ * @n: Number of elements in the array.
+ *
+ * Calculates size of memory needed for structure @p followed by an
+ * array of @n @member elements.
+ *
+ * Return: number of bytes needed or SIZE_MAX on overflow.
+ */
+#define struct_size(p, member, n)					\
+	__ab_c_size(n,							\
+		    sizeof(*(p)->member) + __must_be_array((p)->member),\
+		    sizeof(*(p)))
+
+#endif
+
 static DEFINE_MUTEX(bpflimit_mutex);	/* protects htables list */
 static struct kmem_cache *bpflimit_cachep __read_mostly;
 
@@ -343,7 +367,7 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
 	hinfo->pde = proc_create_data(name, 0,
 		(family == NFPROTO_IPV4) ?
-		hashlimit_net->ipt_hashlimit : hashlimit_net->ip6t_hashlimit,
+		bpflimit_net->ipt_bpflimit : bpflimit_net->ip6t_bpflimit,
 		fops, hinfo);
 	#else
 	hinfo->pde = proc_create_seq_data(name, 0,
@@ -925,13 +949,6 @@ static int bpflimit_mt_check_common(const struct xt_mtchk_param *par,
 	return 0;
 }
 
-
-#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
-static int xt_check_proc_name(const char* name, unsigned int size){
-	if (name[size - 1] != '\0')
-		return -EINVAL;
-}
-#endif
 
 static int bpflimit_mt_check_v1(const struct xt_mtchk_param *par)
 {
