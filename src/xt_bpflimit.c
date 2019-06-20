@@ -353,11 +353,11 @@ static int htable_create(struct net *net, struct bpflimit_cfg3 *cfg,
 	unsigned int size, i;
 	unsigned long nr_pages;
 	#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
-		nr_pages = totalram_pages;
 		const struct file_operations *ops;
+		nr_pages = totalram_pages;
 	#else
-		nr_pages = totalram_pages();
 		const struct seq_operations *ops;
+		nr_pages = totalram_pages();
 	#endif
 	
 	int ret;
@@ -1093,7 +1093,9 @@ static struct xt_match bpflimit_mt_reg[] __read_mostly = {
 		.family         = NFPROTO_IPV4,
 		.match          = bpflimit_mt_v1,
 		.matchsize      = sizeof(struct xt_bpflimit_mtinfo1),
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
 		.usersize	= offsetof(struct xt_bpflimit_mtinfo1, hinfo),
+#endif
 		.checkentry     = bpflimit_mt_check_v1,
 		.destroy        = bpflimit_mt_destroy_v1,
 		.me             = THIS_MODULE,
@@ -1104,7 +1106,9 @@ static struct xt_match bpflimit_mt_reg[] __read_mostly = {
 		.family         = NFPROTO_IPV4,
 		.match          = bpflimit_mt_v2,
 		.matchsize      = sizeof(struct xt_bpflimit_mtinfo2),
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
 		.usersize	= offsetof(struct xt_bpflimit_mtinfo2, hinfo),
+#endif
 		.checkentry     = bpflimit_mt_check_v2,
 		.destroy        = bpflimit_mt_destroy_v2,
 		.me             = THIS_MODULE,
@@ -1115,7 +1119,9 @@ static struct xt_match bpflimit_mt_reg[] __read_mostly = {
 		.family         = NFPROTO_IPV4,
 		.match          = bpflimit_mt,
 		.matchsize      = sizeof(struct xt_bpflimit_mtinfo3),
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
 		.usersize	= offsetof(struct xt_bpflimit_mtinfo3, hinfo),
+#endif
 		.checkentry     = bpflimit_mt_check,
 		.destroy        = bpflimit_mt_destroy,
 		.me             = THIS_MODULE,
@@ -1127,7 +1133,9 @@ static struct xt_match bpflimit_mt_reg[] __read_mostly = {
 		.family         = NFPROTO_IPV6,
 		.match          = bpflimit_mt_v1,
 		.matchsize      = sizeof(struct xt_bpflimit_mtinfo1),
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
 		.usersize	= offsetof(struct xt_bpflimit_mtinfo1, hinfo),
+#endif
 		.checkentry     = bpflimit_mt_check_v1,
 		.destroy        = bpflimit_mt_destroy_v1,
 		.me             = THIS_MODULE,
@@ -1138,7 +1146,9 @@ static struct xt_match bpflimit_mt_reg[] __read_mostly = {
 		.family         = NFPROTO_IPV6,
 		.match          = bpflimit_mt_v2,
 		.matchsize      = sizeof(struct xt_bpflimit_mtinfo2),
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
 		.usersize	= offsetof(struct xt_bpflimit_mtinfo2, hinfo),
+#endif
 		.checkentry     = bpflimit_mt_check_v2,
 		.destroy        = bpflimit_mt_destroy_v2,
 		.me             = THIS_MODULE,
@@ -1149,7 +1159,9 @@ static struct xt_match bpflimit_mt_reg[] __read_mostly = {
 		.family         = NFPROTO_IPV6,
 		.match          = bpflimit_mt,
 		.matchsize      = sizeof(struct xt_bpflimit_mtinfo3),
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
 		.usersize	= offsetof(struct xt_bpflimit_mtinfo3, hinfo),
+#endif
 		.checkentry     = bpflimit_mt_check,
 		.destroy        = bpflimit_mt_destroy,
 		.me             = THIS_MODULE,
