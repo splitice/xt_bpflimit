@@ -90,6 +90,7 @@ struct bpflimit_cfg3 {
 	__u64 burst;		/* Period multiplier for upper limit. */
 	__u32 mode;		/* bitmask of XT_BPFLIMIT_HASH_* */
 
+
 	/* user specified */
 	__u32 size;		/* how many buckets */
 	__u32 max;		/* max number of entries */

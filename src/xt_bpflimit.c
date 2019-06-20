@@ -148,6 +148,7 @@ struct dsthash_dst {
 	};
 	__be16 src_port;
 	__be16 dst_port;
+	__u64 bpf;
 };
 
 struct dsthash_ent {
