@@ -29,6 +29,9 @@
 /* miliseconds */
 #define XT_BPFLIMIT_GCINTERVAL	1000
 
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
+
+
 struct bpflimit_mt_udata {
 	uint32_t mult;
 };

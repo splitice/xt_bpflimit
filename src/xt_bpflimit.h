@@ -17,13 +17,6 @@
  * seconds, or one packet every 59 hours.
  */
  
- 
-#if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
-
-#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
-
-#endif
-
 /* packet length accounting is done in 16-byte steps */
 #define XT_BPFLIMIT_BYTE_SHIFT 4
 
