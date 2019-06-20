@@ -62,6 +62,9 @@ static inline struct bpflimit_net *bpflimit_pernet(struct net *net)
 /* need to declare this at the top */
 
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(5,0,0)
+
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
+
 static const struct file_operations dl_file_ops_v2;
 static const struct file_operations dl_file_ops_v1;
 static const struct file_operations dl_file_ops;
@@ -238,6 +241,7 @@ cfg_copy(struct bpflimit_cfg3 *to, const void *from, int revision)
 static int xt_check_proc_name(const char* name, unsigned int size){
 	if (name[size - 1] != '\0')
 		return -EINVAL;
+	return 0;
 }
 
 #endif
