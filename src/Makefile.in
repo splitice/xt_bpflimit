@@ -43,7 +43,7 @@ libxt_bpflimit_sh.o: libxt_bpflimit.c
 
 
 %.so: %_sh.o
-	gcc -shared -o $@ $<
+	gcc -shared -o $@ $< -lxtables
 
 linstall: | libxt_bpflimit.so
 	@echo " *"
