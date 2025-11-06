@@ -429,6 +429,9 @@ static int parse_interval(const char *rate, uint32_t *val)
 	return 1;
 }
 
+#ifndef _init
+#define _init __attribute__((constructor)) _INIT
+#endif
 static void bpflimit_init(struct xt_entry_match *m)
 {
 	struct xt_bpflimit_info *r = (struct xt_bpflimit_info *)m->data;
